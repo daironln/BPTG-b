@@ -13,6 +13,12 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+      }
+      
       /* Estilos para el contenedor QR */
       #qr-container {
         display: none;
@@ -29,23 +35,40 @@
         font-family: Arial, sans-serif;
         z-index: 1000;
       }
+      
       #qr-code {
-        margin: 20px;
+        margin: 20px auto;
         padding: 15px;
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
+      
+      #qr-code img {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+      }
+      
       #qr-container h1 {
         color: #0088cc; /* Color de Telegram */
         font-size: 24px;
         margin-bottom: 10px;
       }
+      
       #qr-container p {
         color: #333;
         max-width: 80%;
         margin-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
       }
+      
       .telegram-button {
         background-color: #0088cc;
         color: white;
@@ -57,6 +80,99 @@
         cursor: pointer;
         text-decoration: none;
         display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      /* Estilo para el contenedor de frases motivacionales */
+      #unity-loading-bar {
+        position: relative;
+        width: 80%;
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      #motivational-quote {
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        text-align: center;
+        margin: 20px auto 0 auto;
+        padding: 10px 15px;
+        max-width: 80%;
+        line-height: 1.4;
+        font-style: italic;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        animation: fadeInOut 8s infinite;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        width: fit-content;
+      }
+      
+      @keyframes fadeInOut {
+        0% { opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      
+      #unity-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      #loading-cover {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000;
+      }
+      
+      #unity-logo {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      
+      #unity-progress-bar-empty {
+        width: 100%;
+        height: 10px;
+        background-color: #333;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      
+      #unity-progress-bar-full {
+        width: 0%;
+        height: 100%;
+        background-color: #0088cc;
+        border-radius: 5px;
+        transition: width 0.3s;
+      }
+      .spinner {
+        margin: 10px auto;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid #ffffff;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
     </style>
   </head>
@@ -80,11 +196,89 @@
           <div id="unity-progress-bar-full"></div>
         </div>
         <div class="spinner"></div>
+        <!-- Nuevo elemento para mostrar frases motivacionales -->
+        <div id="motivational-quote"></div>
       </div>
     </div>
     <!--<div id="unity-fullscreen-button" style="display: none;"></div>-->
 
     <script>
+      // Array de frases motivacionales
+      const motivationalQuotes = [
+        "El camino hacia el éxito es la actitud.",
+        "Las oportunidades no ocurren, las creas tú.",
+        "La mejor forma de predecir el futuro es creándolo.",
+        "El éxito es la suma de pequeños esfuerzos repetidos día tras día.",
+        "No cuentes los días, haz que los días cuenten.",
+        "Cree en ti mismo y todo será posible.",
+        "Si puedes soñarlo, puedes lograrlo.",
+        "La perseverancia es la clave del éxito.",
+        "Nunca es tarde para ser lo que podrías haber sido.",
+        "Tu actitud determina tu dirección.",
+        "El mejor momento para plantar un árbol fue hace 20 años. El segundo mejor momento es ahora.",
+        "No te preocupes por los fracasos, preocúpate por las posibilidades que pierdes cuando ni siquiera lo intentas.",
+        "La motivación te pone en marcha, el hábito te mantiene en camino.",
+        "No hay atajos para llegar a un lugar que vale la pena.",
+        "Celebra tus pequeñas victorias, cada paso cuenta.",
+        "Si no estás dispuesto a arriesgar lo normal, tendrás que conformarte con lo ordinario.",
+        "La diferencia entre ganar o perder a menudo es no rendirse.",
+        "La única persona a la que estás destinado a convertirte es la persona que tú decides ser.",
+        "El único límite para tu impacto es tu imaginación y compromiso.",
+        "El conocimiento es poder, pero el entusiasmo es el interruptor.",
+        "Cada momento es un nuevo comienzo.",
+        "No esperes a que las oportunidades lleguen, crea tus propias oportunidades.",
+        "La disciplina es el puente entre metas y logros.",
+        "Haz hoy lo que otros no quieren, haz mañana lo que otros no pueden.",
+        "El verdadero fracaso es no intentarlo.",
+        "No busques el éxito. Busca la excelencia y el éxito te buscará a ti.",
+        "Cada logro comienza con la decisión de intentarlo.",
+        "Tu actitud, no tu aptitud, determinará tu altitud.",
+        "Si no estás cometiendo errores, no estás tomando decisiones.",
+        "El éxito consiste en ir de fracaso en fracaso sin perder el entusiasmo.",
+        "Los obstáculos son esas cosas atemorizantes que ves cuando apartas los ojos de tu meta.",
+        "Los desafíos son lo que hacen la vida interesante, superarlos es lo que hace la vida significativa.",
+        "La diferencia entre lo ordinario y lo extraordinario es ese pequeño extra.",
+        "Todo parece imposible hasta que se hace.",
+        "No esperes. Nunca habrá un momento perfecto.",
+        "El único modo de hacer un gran trabajo es amar lo que haces.",
+        "No hay nada imposible para quien lo intenta.",
+        "Levántate, anímate y nunca te rindas.",
+        "El único lugar donde el éxito viene antes que el trabajo es en el diccionario.",
+        "La confianza en uno mismo es el primer secreto del éxito.",
+        "Sé el cambio que quieres ver en el mundo.",
+        "Apunta a la luna. Si fallas, al menos aterrizarás entre las estrellas.",
+        "Si no diseñas tu propio plan de vida, es probable que caigas en el plan de otra persona.",
+        "El esfuerzo constante —no la fuerza o la inteligencia— es la clave para desbloquear nuestro potencial.",
+        "El futuro pertenece a quienes creen en la belleza de sus sueños.",
+        "Nunca sabes lo fuerte que eres hasta que ser fuerte es la única opción que te queda.",
+        "La acción es la llave fundamental de todo éxito.",
+        "Cada día es una nueva oportunidad para cambiar tu vida.",
+        "Los sueños no funcionan a menos que tú lo hagas.",
+        "Lo que haces hoy puede mejorar todos tus mañanas.",
+        "No te conformes con lo que necesitas; lucha por lo que mereces.",
+        "Lo difícil no es llegar a la cima, sino jamás dejar de subir.",
+        "La vida es 10% lo que te sucede y 90% cómo reaccionas a ello.",
+        "Las grandes cosas nunca provienen de la zona de confort.",
+        "El éxito no es definitivo, el fracaso no es fatal: lo que cuenta es el coraje para continuar.",
+        "Una meta es un sueño con fecha límite.",
+        "No construyes una reputación sobre lo que vas a hacer.",
+        "Cuando pienses en rendirte, recuerda por qué empezaste.",
+        "El poder está en ti, no en tus circunstancias.",
+        "No hay ascensor hacia el éxito, hay que tomar las escaleras."
+      ];
+
+      // Función para mostrar frases motivacionales aleatorias
+      function showRandomQuote() {
+        const quoteElement = document.getElementById('motivational-quote');
+        if (quoteElement) {
+          const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+          quoteElement.textContent = motivationalQuotes[randomIndex];
+          
+          // Cambiar la frase cada 8 segundos
+          setTimeout(showRandomQuote, 8000);
+        }
+      }
+
       // Función para detectar dispositivo móvil
       function isMobileDevice() {
         var check = false;
@@ -100,14 +294,36 @@
         return window.Telegram && window.Telegram.WebApp;
       }
 
-      // Función para generar QR
+      // Función para generar QR mejorada
       function generateQR() {
         var currentUrl = window.location.href;
-        var qr = qrcode(0, 'M');
-        qr.addData(currentUrl);
-        qr.make();
-        document.getElementById('qr-code').innerHTML = qr.createImgTag(5);
-      }
+        
+        // Verificamos si qrcode está disponible
+        if (typeof qrcode !== 'undefined') {
+          // Especificamos un tamaño más grande y usamos configuraciones explícitas
+          var typeNumber = 4;
+          var errorCorrectionLevel = 'L';
+          var qr = qrcode(typeNumber, errorCorrectionLevel);
+          qr.addData(currentUrl);
+          qr.make();
+          
+          // Crear QR con tamaño grande y borde visible
+          var qrCodeHTML = qr.createImgTag(10, 20); // 10px por celda, 20px de margen
+          document.getElementById('qr-code').innerHTML = qrCodeHTML;
+          
+          // Asegurarnos que sea visible
+          var qrImg = document.querySelector('#qr-code img');
+          if (qrImg) {
+            qrImg.style.display = 'block';
+            qrImg.style.margin = '0 auto';
+            qrImg.style.width = '180px';
+            qrImg.style.height = '180px';
+          }
+        } else {
+          console.error('La biblioteca QR Code no está cargada correctamente');
+          document.getElementById('qr-code').innerHTML = '<p style="color:red;">Error al generar código QR</p>';
+        }
+      }
 
       // Variables de configuración Unity
       const hideFullScreenButton = "{{{ HIDE_FULL_SCREEN_BUTTON }}}";
@@ -159,14 +375,17 @@
 #if BACKGROUND_FILENAME
         canvas.style.background = "url('" + buildUrl + "/{{{ BACKGROUND_FILENAME.replace(/'/g, '%27') }}}') center / cover";
 #endif
-        loadingCover.style.display = "";
+        loadingCover.style.display = "flex"; // Cambiado a flex para centrar mejor
+        
+        // Iniciar la visualización de frases motivacionales
+        showRandomQuote();
 
         const script = document.createElement("script");
         script.src = loaderUrl;
         script.onload = () => {
           createUnityInstance(canvas, config, (progress) => {
             spinner.style.display = "none";
-            progressBarEmpty.style.display = "";
+            progressBarEmpty.style.display = "block";
             progressBarFull.style.width = `${100 * progress}%`;
           }).then((unityInstance) => {
             loadingCover.style.display = "none";
@@ -208,7 +427,7 @@
           });
         };
         document.body.appendChild(script);
-      }
+          }
 
       // Comprobar dispositivo al cargar la página
       window.onload = function() {
@@ -220,7 +439,11 @@
           document.getElementById('qr-container').style.display = 'flex';
           document.getElementById('unity-container').style.display = 'none';
           document.getElementById('loading-cover').style.display = 'none';
-          generateQR();
+          
+          // Asegurarse de que generateQR() se ejecute después de que la biblioteca QR esté cargada
+          setTimeout(function() {
+            generateQR();
+          }, 500);
           
           // Opcionalmente añadir un botón para abrir en Telegram
           var telegramLink = document.createElement('a');
