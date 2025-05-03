@@ -17,20 +17,15 @@
 
 
     <style>
-/*         body {
-            background: linear-gradient(135deg, #2AABEE, #229ED9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
- */
         .qr-container {
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            position: relative;
+/*             position: relative; */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .telegram-logo {
@@ -42,15 +37,6 @@
             height: 40px;
             background: url('https://telegram.org/img/t_logo.svg') center/contain no-repeat;
         }
-
-        .qr {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-          }
     </style>
 
 
