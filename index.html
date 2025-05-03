@@ -17,15 +17,34 @@
 
 
     <style>
-        .qr-container {
+         body {
+       
+            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .qr-container {
+            background: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-/*             position: relative; */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
+      
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr {
+      
+            display: block;
+            margin: auto;
+            border-radius: 8px;
+            border: 4px solid white;
         }
 
         .telegram-logo {
@@ -36,6 +55,8 @@
             width: 40px;
             height: 40px;
             background: url('https://telegram.org/img/t_logo.svg') center/contain no-repeat;
+      
+            filter: drop-shadow(0 2px 4px rgba(42, 171, 238, 0.3));
         }
     </style>
 
