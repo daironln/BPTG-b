@@ -15,6 +15,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
+
+     <style>
+        body {
+            background: #2AABEE; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #qrcode {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .telegram-logo {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('https://telegram.org/img/t_logo.svg') center/contain no-repeat;
+        }
+    </style>
+
   </head>
   
 
@@ -33,20 +60,32 @@
     </div>
     <!--<div id="unity-fullscreen-button" style="display: none;"></div>-->
 
-    <div id="qrcode"></div>
+     <div id="qrcode-container">
+        <div id="qrcode"></div>
+        <div class="telegram-logo"></div>
+    </div>
 
     <script>
 
-      const texto = "https://youtube.com";
+      const botUsername = 'BlockPuzzChain_bot';
+      const startLink = `https://t.me/${botUsername}?start=qr`;
       
       const qr = new QRCode(document.getElementById("qrcode"), {
-        text: texto,
-        width: 200,  
-        height: 200,
-        colorDark: "#000000", 
-        colorLight: "#ffffff", 
-        correctLevel: QRCode.CorrectLevel.H
-      });
+            text: startLink,
+            width: 256,
+            height: 256,
+            colorDark: "#2AABEE",  
+            colorLight: "#ffffff", 
+            correctLevel: QRCode.CorrectLevel.H,
+            margin: 10
+        });
+
+      const container = document.getElementById('qrcode-container');
+      const logo = container.querySelector('.telegram-logo');
+      const qrSize = 256;
+        
+      logo.style.top = (qrSize/2 - 20) + 'px';
+      logo.style.left = (qrSize/2 - 20) + 'px';
       
 
       const hideFullScreenButton = "";
