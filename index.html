@@ -34,7 +34,7 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             position: relative;
       
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
         }
@@ -58,6 +58,28 @@
       
             filter: drop-shadow(0 2px 4px rgba(42, 171, 238, 0.3));
         }
+
+      @media (min-width: 768px) {
+        /* Mostrar QR solo en desktop */
+        .qr-container.desktop-version {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border-radius: 0;
+            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            z-index: 9999;
+        }
+        
+        .qr-container.desktop-version img.qr {
+            width: 80vh;
+            height: 80vh;
+            border: 8px solid white;
+        }
+    }
     </style>
 
 
@@ -93,11 +115,27 @@
     <script>
 
       const md = new MobileDetect(window.navigator.userAgent);
-      if (!md.mobile()) {
-        console.log("No es mobil");
-
-        return;
-      }
+    
+    if (!md.mobile()) {
+        console.log("No es móvil - Mostrando QR");
+        // Ocultar elementos de Unity
+        document.getElementById("unity-container").style.display = "none";
+        document.getElementById("loading-cover").style.display = "none";
+        
+        // Mostrar QR en versión desktop
+        const qrContainer = document.querySelector('.qr-container');
+        qrContainer.classList.add('desktop-version');
+        
+        // Eliminar cualquier script de Unity
+        const unityScripts = document.querySelectorAll('script[src*="Build/"]');
+        unityScripts.forEach(script => script.remove());
+        
+        return; // Detener ejecución del resto del código
+    }
+    else {
+        // Ocultar QR en móviles
+        document.querySelector('.qr-container').style.display = "none";
+    }
       
 
       const hideFullScreenButton = "";
