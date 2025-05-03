@@ -12,6 +12,9 @@
 
     <!-- <script src="https://telegram.org/js/games.js"></script> -->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
   </head>
   
 
@@ -30,7 +33,21 @@
     </div>
     <!--<div id="unity-fullscreen-button" style="display: none;"></div>-->
 
+    <div id="qrcode"></div>
+
     <script>
+
+      const texto = "https://youtube.com";
+      
+      const qr = new QRCode(document.getElementById("qrcode"), {
+        text: texto,
+        width: 200,  
+        height: 200,
+        colorDark: "#000000", 
+        colorLight: "#ffffff", 
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
 
       const hideFullScreenButton = "";
       const buildUrl = "Build";
