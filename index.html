@@ -125,6 +125,8 @@
         // Mostrar QR en versión desktop
         const qrContainer = document.querySelector('.qr-container');
         qrContainer.classList.add('desktop-version');
+
+        qrContainer.style.display = "flex";
         
         // Eliminar cualquier script de Unity
         const unityScripts = document.querySelectorAll('script[src*="Build/"]');
