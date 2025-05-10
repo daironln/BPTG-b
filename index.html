@@ -4,84 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>BPTG</title>
+    <title>Block Puzzle</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <!-- <script src="https://telegram.org/js/games.js"></script> -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-
-    <style>
-         body {
-       
-            background: linear-gradient(135deg, #2AABEE, #229ED9);
-            min-height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-
-          .qr-container {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            position: relative;
-      
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .qr {
-      
-            display: block;
-            margin: auto;
-            border-radius: 8px;
-            border: 4px solid white;
-        }
-
-        .telegram-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            background: url('https://telegram.org/img/t_logo.svg') center/contain no-repeat;
-      
-            filter: drop-shadow(0 2px 4px rgba(42, 171, 238, 0.3));
-        }
-
-      @media (min-width: 768px) {
-        /* Mostrar QR solo en desktop */
-        .qr-container.desktop-version {
-            display: flex;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            border-radius: 0;
-            background: linear-gradient(135deg, #2AABEE, #229ED9);
-            z-index: 9999;
-        }
-        
-        .qr-container.desktop-version img.qr {
-            width: 80vh;
-            height: 80vh;
-            border: 8px solid white;
-        }
-    }
-    </style>
-
 
   </head>
   
@@ -101,57 +31,15 @@
     </div>
     <!--<div id="unity-fullscreen-button" style="display: none;"></div>-->
 
-     <div class="qr-container">
-        <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&color=2AABEE&bgcolor=FFFFFF&data=https://t.me/BlockPuzzChain_bot?start=qr"
-             alt="QR Telegram">
-        <div class="telegram-logo"></div>
-    </div>
-
-
-
-
-
-    
     <script>
 
-      const md = new MobileDetect(window.navigator.userAgent);
-    
-    if (!md.mobile()) {
-        console.log("No es móvil - Mostrando QR");
-        // Ocultar elementos de Unity
-        document.getElementById("unity-container").style.display = "none";
-        document.getElementById("loading-cover").style.display = "none";
-        
-        // Mostrar QR en versión desktop
-        const qrContainer = document.querySelector('.qr-container');
-        qrContainer.classList.add('desktop-version');
+       window.addEventListener("load", function () {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("ServiceWorker.js");
+        }
+      });
 
-        qrContainer.style.display = "flex";
-        
-        // Eliminar cualquier script de Unity
-        const unityScripts = document.querySelectorAll('script[src*="Build/"]');
-        unityScripts.forEach(script => script.remove());
-        
-        return; // Detener ejecución del resto del código
-    }
-    else {
-        // Ocultar QR en móviles
-        document.querySelector('.qr-container').style.display = "none";
-    }
       
-
-      const hideFullScreenButton = "";
-      const buildUrl = "Build";
-      const loaderUrl = buildUrl + "/BPTG.loader.js";
-      const config = {
-        dataUrl: buildUrl + "/BPTG.data",
-        frameworkUrl: buildUrl + "/BPTG.framework.js",
-        codeUrl: buildUrl + "/BPTG.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "Fusyona",
-        productName: "BPTG",
-        productVersion: "1.0",
-      };
 
       const container = document.querySelector("#unity-container");
       const canvas = document.querySelector("#unity-canvas");
@@ -160,6 +48,44 @@
       const progressBarFull = document.querySelector("#unity-progress-bar-full");
       //const fullscreenButton = document.querySelector("#unity-fullscreen-button");
       const spinner = document.querySelector('.spinner');
+
+
+      
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+
+
+
+      const hideFullScreenButton = "";
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/BPTG.loader.js";
+      const config = {
+        arguments: [],
+        dataUrl: buildUrl + "/BPTG.data",
+        frameworkUrl: buildUrl + "/BPTG.framework.js",
+        codeUrl: buildUrl + "/BPTG.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Fusy Fox",
+        productName: "Block Puzzle",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
 
       const canFullscreen = (function() {
         for (const key of [
